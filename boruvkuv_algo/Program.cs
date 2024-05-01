@@ -10,6 +10,8 @@
             g.AddEdge(0, 3, 5);
             g.AddEdge(1, 3, 15);
             g.AddEdge(2, 3, 4);
+
+            g.BoruvkaAlgorithm();
         }
 
         class Graph
@@ -53,11 +55,33 @@
                 while (numTrees > 1) //dokud nejsou všechny stromy spojené pokračuj
                 {
 
-                    for(int i = 0; i < graph.Count; i++)
+                    for (int i = 0; i < graph.Count; i++)
                     {
                         int u = graph[i][0];
                         int v = graph[i][1];
                         int w = graph[i][2]; //načítání hodnot z grafu
+
+                        int set1 = Find(parent, u);
+                        int set2 = Find(parent, v);
+
+
+                        if (set1 != set2)
+                        {
+                            if (cheapest[set1][2] == -1
+                                || cheapest[set1][2] > w)
+                            {
+                                cheapest[set1]
+                                    = new List<int> { u, v, w };
+                            }
+                            if (cheapest[set2][2] == -1
+                                || cheapest[set2][2] > w)
+                            {
+                                cheapest[set2]
+                                    = new List<int> { u, v, w };
+                            }
+                        }
+
+
 
 
 
@@ -66,15 +90,77 @@
 
                     }
 
+                    for (int node = 0; node < V; node++)
+                    {
+
+                        // Check if cheapest for current set exists
+                        if (cheapest[node][2] != -1)
+                        {
+                            int u = cheapest[node][0],
+                                v = cheapest[node][1],
+                                w = cheapest[node][2];
+                            int set1 = Find(parent, u),
+                                set2 = Find(parent, v);
+                            if (set1 != set2)
+                            {
+                                TotalPrice += w;
+                                UnionSet(parent, rank, set1, set2);
+                                Console.WriteLine(
+                                    "Edge {0}-{1} with weight {2} included in MST",
+                                    u, v, w);
+                                numTrees--;
+                            }
+                        }
+                    }
+
+                    for (int node = 0; node < V; node++)
+                    {
+                        // reset cheapest array
+                        cheapest[node][2] = -1;
+                    }
 
                 }
 
+                Console.WriteLine("Weight of MST is {0}",
+                          TotalPrice);
 
 
 
 
 
+            }
 
+            private void UnionSet(List<int> parent, List<int> rank,
+                         int x, int y)
+            {
+                int xroot = Find(parent, x);
+                int yroot = Find(parent, y);
+
+              
+                if (rank[xroot] < rank[yroot])
+                {
+                    parent[xroot] = yroot;
+                }
+                else if (rank[xroot] > rank[yroot])
+                {
+                    parent[yroot] = xroot;
+                }
+
+              
+                else
+                {
+                    parent[yroot] = xroot;
+                    rank[xroot]++;
+                }
+            }
+
+            private int Find(List<int> parent, int i) // prijima seznam rodicu,  jestliže prvek ukazuje na sebe je kořen svého stromu, pokud ne najde rodiče a vrátí kořen
+            {
+                if (parent[i] == i)
+                {
+                    return i;
+                }
+                return Find(parent, parent[i]);
             }
 
         }
