@@ -62,7 +62,7 @@
                         int w = graph[i][2]; //načítání hodnot z grafu
 
                         int set1 = Find(parent, u);
-                        int set2 = Find(parent, v);
+                        int set2 = Find(parent, v); //najdi dva komponenty aktualni hrani
 
 
                         if (set1 != set2)
@@ -93,7 +93,7 @@
                     for (int node = 0; node < V; node++)
                     {
 
-                        // Check if cheapest for current set exists
+                        // Check jestli nejlevnější pro current set existuje
                         if (cheapest[node][2] != -1)
                         {
                             int u = cheapest[node][0],
@@ -129,7 +129,7 @@
 
 
             }
-
+             // funkce, která spojuje dvě množiny x a y
             private void UnionSet(List<int> parent, List<int> rank,
                          int x, int y)
             {
@@ -137,7 +137,7 @@
                 int yroot = Find(parent, y);
 
               
-                if (rank[xroot] < rank[yroot])
+                if (rank[xroot] < rank[yroot]) //menší strom zapiš pod větší 
                 {
                     parent[xroot] = yroot;
                 }
@@ -147,7 +147,7 @@
                 }
 
               
-                else
+                else //pokud mají stejný rank, vyber jeden a zvětši rank
                 {
                     parent[yroot] = xroot;
                     rank[xroot]++;
